@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>HoriViaje Ticket — Horisoes IPS</title>
+  <meta name="description" content="Completa tu ticket de viaje personal HoriViaje — Horisoes IPS">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Nunito:wght@400;600&family=Libre+Barcode+128+Text&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -31,11 +32,22 @@
     .hv-logo-icon {
       width: 52px; height: 52px; background: #fff;
       border-radius: 14px; display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
     }
+    .hv-logo-icon img { width: 100%; height: 100%; object-fit: cover; }
     .hv-logo-icon svg { width: 34px; height: 34px; }
     .brand  { font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 700; color: #fff; line-height: 1; }
     .subbrand { font-size: 11px; color: #a78bfa; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
     .hv-tagline { color: #c4b5fd; font-size: 14px; margin-top: 0.5rem; }
+
+    /* ── Banner image ── */
+    .hv-banner {
+      max-width: 580px; width: 100%;
+      border-radius: 16px; overflow: hidden;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .hv-banner img { width: 100%; height: 160px; object-fit: cover; display: block; }
 
     /* ── Ticket card ── */
     .hv-ticket {
@@ -67,7 +79,8 @@
     .progress-fill { height: 100%; background: #7c3aed; width: 0%; transition: width 0.35s ease; border-radius: 4px; }
 
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-    .three-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .three-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .full-row { margin-bottom: 14px; }
 
     .field label {
       display: block; font-size: 10.5px; font-weight: 700;
@@ -81,6 +94,7 @@
       outline: none; transition: border-color 0.2s, background 0.2s;
       resize: none;
     }
+    .field input[type="date"] { cursor: pointer; }
     .field input:focus, .field textarea:focus {
       border-color: #7c3aed; background: #fff;
       box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
@@ -113,21 +127,53 @@
     .hv-btn:disabled { background: #a78bfa; cursor: not-allowed; }
     .hv-btn svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; }
 
-    /* ── Success ── */
+    /* ── Success / Ticket View ── */
     #success-body {
       display: none; flex-direction: column;
       align-items: center; text-align: center;
-      padding: 3rem 1.75rem 2.5rem;
+      padding: 2rem 1.75rem 2rem;
     }
     .check-circle {
-      width: 72px; height: 72px; border-radius: 50%;
+      width: 64px; height: 64px; border-radius: 50%;
       background: #ede9fe;
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
     }
-    .check-circle svg { width: 40px; height: 40px; stroke: #7c3aed; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-    #success-body h3 { font-family: 'Poppins', sans-serif; color: #1e1b4b; font-size: 22px; margin-bottom: 0.5rem; }
-    #success-body p { color: #6d28d9; font-size: 15px; margin-bottom: 1.5rem; }
+    .check-circle svg { width: 36px; height: 36px; stroke: #7c3aed; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    #success-body h3 { font-family: 'Poppins', sans-serif; color: #1e1b4b; font-size: 20px; margin-bottom: 0.25rem; }
+    #success-body > p { color: #6d28d9; font-size: 14px; margin-bottom: 1.25rem; }
+
+    /* ── Printed Ticket Panel ── */
+    .ticket-print {
+      width: 100%; background: #f5f3ff;
+      border: 2px dashed #7c3aed; border-radius: 14px;
+      padding: 1.25rem 1.5rem; text-align: left; margin-bottom: 1.25rem;
+    }
+    .ticket-print-header {
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1.5px solid #ddd6fe; padding-bottom: 0.75rem; margin-bottom: 0.75rem;
+    }
+    .tp-brand { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 700; color: #4c1d95; }
+    .tp-id { font-size: 11px; color: #7c3aed; font-weight: 600; letter-spacing: 1px; }
+    .ticket-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin-bottom: 0.85rem;
+    }
+    .tp-field label { font-size: 9.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #6d28d9; display: block; }
+    .tp-field span { font-size: 13px; color: #1e1b4b; font-weight: 600; }
+    .tp-full { grid-column: 1 / -1; }
+
+    /* ── Barcode ── */
+    .barcode-area {
+      border-top: 1.5px dashed #c4b5fd; padding-top: 0.85rem; text-align: center;
+    }
+    .barcode-text {
+      font-family: 'Libre Barcode 128 Text', cursive;
+      font-size: 52px; color: #1e1b4b; line-height: 1;
+      letter-spacing: 2px; display: block;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .barcode-code { font-size: 10px; color: #7c3aed; margin-top: 4px; letter-spacing: 2px; font-weight: 700; }
+
     .hv-reset {
       background: none; border: 1.5px solid #7c3aed; color: #7c3aed;
       border-radius: 10px; padding: 9px 24px;
@@ -148,6 +194,8 @@
     @media (max-width: 480px) {
       .field-row { grid-template-columns: 1fr; }
       .three-cols { grid-template-columns: 1fr; }
+      .ticket-grid { grid-template-columns: 1fr; }
+      .tp-full { grid-column: 1; }
     }
   </style>
 </head>
@@ -157,7 +205,8 @@
   <div class="hv-header">
     <div class="hv-logo">
       <div class="hv-logo-icon">
-        <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <img src="img/MarcaAguaCOLOR-8.png" alt="Logo Horisoes IPS" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none">
           <circle cx="17" cy="17" r="15" fill="#4c1d95"/>
           <path d="M9 21 L17 7 L25 21 L20 19 L20 27 L14 27 L14 19 Z" fill="#38bdf8"/>
         </svg>
@@ -168,6 +217,11 @@
       </div>
     </div>
     <div class="hv-tagline">Completa tu ticket de viaje personal</div>
+  </div>
+
+  <!-- Banner image -->
+  <div class="hv-banner">
+    <img src="img/Abril (2).png" alt="Banner HoriViaje" onerror="this.parentElement.style.display='none'">
   </div>
 
   <!-- Ticket -->
@@ -188,32 +242,52 @@
     <div class="hv-body" id="form-body">
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
 
+      <!-- Nombre + Cargo -->
       <div class="field-row">
         <div class="field">
-          <label>Nombre</label>
+          <label for="f-nombre">Nombre</label>
           <input type="text" id="f-nombre" placeholder="Tu nombre completo" autocomplete="name" />
           <div class="error-msg" id="e-nombre">Este campo es requerido</div>
         </div>
         <div class="field">
-          <label>Cargo</label>
+          <label for="f-cargo">Cargo</label>
           <input type="text" id="f-cargo" placeholder="Tu cargo o rol" />
           <div class="error-msg" id="e-cargo">Este campo es requerido</div>
         </div>
       </div>
 
-      <div class="three-cols">
+      <!-- Sede -->
+      <div class="full-row">
         <div class="field">
-          <label>Objetivo</label>
+          <label for="f-sede">Sede</label>
+          <input type="text" id="f-sede" placeholder="Sede o ubicación" />
+          <div class="error-msg" id="e-sede">Este campo es requerido</div>
+        </div>
+      </div>
+
+      <!-- Fechas -->
+      <div class="field-row">
+        <div class="field">
+          <label for="f-fecha-inicio">Fecha Inicio del Objetivo</label>
+          <input type="date" id="f-fecha-inicio" />
+          <div class="error-msg" id="e-fecha-inicio">Este campo es requerido</div>
+        </div>
+        <div class="field">
+          <label for="f-fecha-fin">Fecha Fin del Objetivo</label>
+          <input type="date" id="f-fecha-fin" />
+          <div class="error-msg" id="e-fecha-fin">Este campo es requerido</div>
+        </div>
+      </div>
+
+      <!-- Objetivo + Progreso -->
+      <div class="field-row">
+        <div class="field">
+          <label for="f-objetivo">Objetivo</label>
           <textarea id="f-objetivo" placeholder="¿Cuál es tu objetivo?"></textarea>
           <div class="error-msg" id="e-objetivo">Este campo es requerido</div>
         </div>
         <div class="field">
-          <label>Fecha</label>
-          <textarea id="f-fecha" placeholder="Fecha o periodo de referencia"></textarea>
-          <div class="error-msg" id="e-fecha">Este campo es requerido</div>
-        </div>
-        <div class="field">
-          <label>Progreso</label>
+          <label for="f-progreso">Progreso</label>
           <textarea id="f-progreso" placeholder="¿Cómo vas avanzando?"></textarea>
           <div class="error-msg" id="e-progreso">Este campo es requerido</div>
         </div>
@@ -237,36 +311,90 @@
       </button>
     </div>
 
-    <!-- Success -->
+    <!-- Success + Ticket impreso -->
     <div id="success-body">
       <div class="check-circle">
         <svg viewBox="0 0 40 40"><path d="M9 20 L17 28 L31 12"/></svg>
       </div>
       <h3>¡Ticket enviado!</h3>
       <p id="success-msg">Tu información fue registrada correctamente.</p>
+
+      <!-- Ticket visual -->
+      <div class="ticket-print" id="ticket-print">
+        <div class="ticket-print-header">
+          <span class="tp-brand">✈ HoriViaje</span>
+          <span class="tp-id" id="tp-id">HV-000000</span>
+        </div>
+        <div class="ticket-grid">
+          <div class="tp-field">
+            <label>Nombre</label>
+            <span id="tp-nombre">—</span>
+          </div>
+          <div class="tp-field">
+            <label>Cargo</label>
+            <span id="tp-cargo">—</span>
+          </div>
+          <div class="tp-field">
+            <label>Sede</label>
+            <span id="tp-sede">—</span>
+          </div>
+          <div class="tp-field">
+            <label>Fecha Inicio</label>
+            <span id="tp-fecha-inicio">—</span>
+          </div>
+          <div class="tp-field">
+            <label>Fecha Fin</label>
+            <span id="tp-fecha-fin">—</span>
+          </div>
+          <div class="tp-field tp-full">
+            <label>Objetivo</label>
+            <span id="tp-objetivo">—</span>
+          </div>
+          <div class="tp-field tp-full">
+            <label>Progreso</label>
+            <span id="tp-progreso">—</span>
+          </div>
+        </div>
+        <div class="barcode-area">
+          <span class="barcode-text" id="barcode-value">HV000000</span>
+          <div class="barcode-code" id="barcode-label">— ESCANEA TU TICKET —</div>
+        </div>
+      </div>
+
       <button class="hv-reset" onclick="resetForm()">Llenar otro ticket</button>
     </div>
   </div>
 
   <!-- Footer -->
   <div class="hv-note">
-    <strong>Horisoes IPS</strong> · Tus respuestas se guardan de forma segura en Google Sheets.<br>
+    <strong>Horisoes IPS</strong> <br>
     Todos los campos son requeridos para completar tu ticket de abordaje.
   </div>
 
   <script>
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqphjujw97m5hcQGkQxR8csCJNPujD0tSytIO7flD7fW3H1p656oCVEg9ZdqPRoaEt/exec';
 
-    const fields = ['nombre','cargo','objetivo','fecha','progreso'];
+    const fields = ['nombre','cargo','sede','fecha-inicio','fecha-fin','objetivo','progreso'];
 
     fields.forEach(f => {
       document.getElementById('f-' + f).addEventListener('input', updateProgress);
+      document.getElementById('f-' + f).addEventListener('change', updateProgress);
     });
 
     function updateProgress() {
       let filled = 0;
       fields.forEach(f => { if (document.getElementById('f-'+f).value.trim()) filled++; });
       document.getElementById('progress-fill').style.width = (filled / fields.length * 100) + '%';
+    }
+
+    function genTicketId() {
+      return 'HV-' + Date.now().toString().slice(-6);
+    }
+
+    function formatDate(val) {
+      if (!val) return '—';
+      const [y, m, d] = val.split('-');
+      return d + '/' + m + '/' + y;
     }
 
     async function handleSubmit() {
@@ -289,13 +417,20 @@
       btn.disabled = true;
       btn.innerHTML = '<svg viewBox="0 0 24 24" stroke="white" stroke-width="2" fill="none" width="18" height="18"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Enviando...';
 
-      const nombre = document.getElementById('f-nombre').value.trim();
+      const nombre      = document.getElementById('f-nombre').value.trim();
+      const cargo       = document.getElementById('f-cargo').value.trim();
+      const sede        = document.getElementById('f-sede').value.trim();
+      const fechaInicio = document.getElementById('f-fecha-inicio').value.trim();
+      const fechaFin    = document.getElementById('f-fecha-fin').value.trim();
+      const objetivo    = document.getElementById('f-objetivo').value.trim();
+      const progreso    = document.getElementById('f-progreso').value.trim();
+      const ticketId    = genTicketId();
+
       const data = {
-        nombre,
-        cargo:    document.getElementById('f-cargo').value.trim(),
-        objetivo: document.getElementById('f-objetivo').value.trim(),
-        fecha:    document.getElementById('f-fecha').value.trim(),
-        progreso: document.getElementById('f-progreso').value.trim(),
+        nombre, cargo, sede,
+        fechaInicio, fechaFin,
+        objetivo, progreso,
+        ticketId,
         timestamp: new Date().toLocaleString('es-CO', {timeZone: 'America/Bogota'})
       };
 
@@ -306,6 +441,22 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
+
+        // Poblar ticket visual
+        document.getElementById('tp-id').textContent       = ticketId;
+        document.getElementById('tp-nombre').textContent   = nombre;
+        document.getElementById('tp-cargo').textContent    = cargo;
+        document.getElementById('tp-sede').textContent     = sede;
+        document.getElementById('tp-fecha-inicio').textContent = formatDate(fechaInicio);
+        document.getElementById('tp-fecha-fin').textContent    = formatDate(fechaFin);
+        document.getElementById('tp-objetivo').textContent = objetivo;
+        document.getElementById('tp-progreso').textContent = progreso;
+
+        // Código de barras simbólico
+        const barcodeRaw = ticketId.replace('HV-', 'HV') + nombre.replace(/\s+/g,'').substring(0,6).toUpperCase();
+        document.getElementById('barcode-value').textContent = barcodeRaw;
+        document.getElementById('barcode-label').textContent = ticketId + ' · ' + nombre.toUpperCase();
+
         document.getElementById('success-msg').textContent =
           '¡' + nombre + ', tu ticket fue registrado exitosamente!';
         document.getElementById('form-body').style.display = 'none';
