@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HoriViaje Ticket — Horisoes IPS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #1a0a4a;
+      background-image:
+        radial-gradient(ellipse at 20% 50%, #2d1270 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, #3b1fa8 0%, transparent 50%);
+      font-family: 'Nunito', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 1rem 3rem;
+    }
+
+    /* ── Header ── */
+    .hv-header { text-align: center; margin-bottom: 2rem; }
+    .hv-logo {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      margin-bottom: 0.5rem;
+    }
+    .hv-logo-icon {
+      width: 52px; height: 52px; background: #fff;
+      border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    }
+    .hv-logo-icon svg { width: 34px; height: 34px; }
+    .brand  { font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 700; color: #fff; line-height: 1; }
+    .subbrand { font-size: 11px; color: #a78bfa; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+    .hv-tagline { color: #c4b5fd; font-size: 14px; margin-top: 0.5rem; }
+
+    /* ── Ticket card ── */
+    .hv-ticket {
+      background: #fff;
+      border-radius: 20px;
+      max-width: 580px; width: 100%;
+      box-shadow: 0 12px 60px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+    .hv-stripe {
+      height: 7px;
+      background: repeating-linear-gradient(
+        90deg, #7c3aed 0px, #7c3aed 14px, #5b21b6 14px, #5b21b6 22px
+      );
+    }
+    .hv-ticket-header {
+      background: #4c1d95;
+      padding: 1rem 1.5rem 0.85rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .ticket-brand .tname { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700; color: #38bdf8; }
+    .ticket-brand .tlabel { font-size: 11px; color: #c4b5fd; font-weight: 600; letter-spacing: 1px; }
+    .plane-svg { width: 36px; height: 36px; fill: #fff; opacity: 0.9; }
+
+    /* ── Body ── */
+    .hv-body { padding: 1.75rem 1.75rem 1.5rem; }
+
+    .progress-bar { height: 4px; background: #ede9fe; border-radius: 4px; overflow: hidden; margin-bottom: 1.4rem; }
+    .progress-fill { height: 100%; background: #7c3aed; width: 0%; transition: width 0.35s ease; border-radius: 4px; }
+
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .three-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+
+    .field label {
+      display: block; font-size: 10.5px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: #6d28d9; margin-bottom: 5px;
+    }
+    .field input, .field textarea {
+      width: 100%; border: 1.5px solid #ddd6fe; border-radius: 10px;
+      padding: 9px 12px; font-family: 'Nunito', sans-serif;
+      font-size: 14px; color: #1e1b4b; background: #f5f3ff;
+      outline: none; transition: border-color 0.2s, background 0.2s;
+      resize: none;
+    }
+    .field input:focus, .field textarea:focus {
+      border-color: #7c3aed; background: #fff;
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
+    }
+    .field textarea { height: 78px; }
+    .field input.error, .field textarea.error { border-color: #dc2626; }
+    .error-msg { font-size: 11px; color: #dc2626; margin-top: 3px; display: none; }
+
+    .hv-divider {
+      display: flex; align-items: center; gap: 8px;
+      margin: 0.5rem 0 1.4rem;
+    }
+    .div-line { flex: 1; border-top: 1.5px dashed #c4b5fd; }
+    .div-dot {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #4c1d95;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .div-dot svg { width: 12px; height: 12px; }
+
+    .hv-btn {
+      width: 100%; padding: 13px; background: #6d28d9; color: #fff;
+      border: none; border-radius: 12px; font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 600; cursor: pointer; letter-spacing: 0.5px;
+      transition: background 0.2s, transform 0.1s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .hv-btn:hover { background: #5b21b6; }
+    .hv-btn:active { transform: scale(0.98); }
+    .hv-btn:disabled { background: #a78bfa; cursor: not-allowed; }
+    .hv-btn svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; }
+
+    /* ── Success ── */
+    #success-body {
+      display: none; flex-direction: column;
+      align-items: center; text-align: center;
+      padding: 3rem 1.75rem 2.5rem;
+    }
+    .check-circle {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: #ede9fe;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .check-circle svg { width: 40px; height: 40px; stroke: #7c3aed; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    #success-body h3 { font-family: 'Poppins', sans-serif; color: #1e1b4b; font-size: 22px; margin-bottom: 0.5rem; }
+    #success-body p { color: #6d28d9; font-size: 15px; margin-bottom: 1.5rem; }
+    .hv-reset {
+      background: none; border: 1.5px solid #7c3aed; color: #7c3aed;
+      border-radius: 10px; padding: 9px 24px;
+      font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .hv-reset:hover { background: #f5f3ff; }
+
+    /* ── Footer note ── */
+    .hv-note {
+      max-width: 580px; width: 100%; margin-top: 1.25rem;
+      background: rgba(255,255,255,0.07); border-radius: 12px;
+      padding: 0.85rem 1.25rem; color: #c4b5fd; font-size: 12px;
+      line-height: 1.7; text-align: center;
+    }
+    .hv-note strong { color: #fff; }
+
+    @media (max-width: 480px) {
+      .field-row { grid-template-columns: 1fr; }
+      .three-cols { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="hv-header">
+    <div class="hv-logo">
+      <div class="hv-logo-icon">
+        <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="17" cy="17" r="15" fill="#4c1d95"/>
+          <path d="M9 21 L17 7 L25 21 L20 19 L20 27 L14 27 L14 19 Z" fill="#38bdf8"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand">HoriViaje Ticket</div>
+        <div class="subbrand">Horisoes IPS</div>
+      </div>
+    </div>
+    <div class="hv-tagline">Completa tu ticket de viaje personal</div>
+  </div>
+
+  <!-- Ticket -->
+  <div class="hv-ticket">
+    <div class="hv-stripe"></div>
+
+    <div class="hv-ticket-header">
+      <div class="ticket-brand">
+        <div class="tname">HoriViaje</div>
+        <div class="tlabel">Ticket de abordaje</div>
+      </div>
+      <svg class="plane-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 16v-2l-8-5V3.5A1.5 1.5 0 0 0 11.5 2A1.5 1.5 0 0 0 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1l3.5 1v-1.5L13 19v-5.5z"/>
+      </svg>
+    </div>
+
+    <!-- Form -->
+    <div class="hv-body" id="form-body">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" id="f-nombre" placeholder="Tu nombre completo" autocomplete="name" />
+          <div class="error-msg" id="e-nombre">Este campo es requerido</div>
+        </div>
+        <div class="field">
+          <label>Cargo</label>
+          <input type="text" id="f-cargo" placeholder="Tu cargo o rol" />
+          <div class="error-msg" id="e-cargo">Este campo es requerido</div>
+        </div>
+      </div>
+
+      <div class="three-cols">
+        <div class="field">
+          <label>Objetivo</label>
+          <textarea id="f-objetivo" placeholder="¿Cuál es tu objetivo?"></textarea>
+          <div class="error-msg" id="e-objetivo">Este campo es requerido</div>
+        </div>
+        <div class="field">
+          <label>Fecha</label>
+          <textarea id="f-fecha" placeholder="Fecha o periodo de referencia"></textarea>
+          <div class="error-msg" id="e-fecha">Este campo es requerido</div>
+        </div>
+        <div class="field">
+          <label>Progreso</label>
+          <textarea id="f-progreso" placeholder="¿Cómo vas avanzando?"></textarea>
+          <div class="error-msg" id="e-progreso">Este campo es requerido</div>
+        </div>
+      </div>
+
+      <div class="hv-divider">
+        <div class="div-line"></div>
+        <div class="div-dot">
+          <svg viewBox="0 0 12 12" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round">
+            <path d="M6 1v10M1 6h10"/>
+          </svg>
+        </div>
+        <div class="div-line"></div>
+      </div>
+
+      <button class="hv-btn" id="send-btn" onclick="handleSubmit()">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/>
+        </svg>
+        Enviar ticket
+      </button>
+    </div>
+
+    <!-- Success -->
+    <div id="success-body">
+      <div class="check-circle">
+        <svg viewBox="0 0 40 40"><path d="M9 20 L17 28 L31 12"/></svg>
+      </div>
+      <h3>¡Ticket enviado!</h3>
+      <p id="success-msg">Tu información fue registrada correctamente.</p>
+      <button class="hv-reset" onclick="resetForm()">Llenar otro ticket</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="hv-note">
+    <strong>Horisoes IPS</strong> · Tus respuestas se guardan de forma segura en Google Sheets.<br>
+    Todos los campos son requeridos para completar tu ticket de abordaje.
+  </div>
+
+  <script>
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqphjujw97m5hcQGkQxR8csCJNPujD0tSytIO7flD7fW3H1p656oCVEg9ZdqPRoaEt/exec';
+
+    const fields = ['nombre','cargo','objetivo','fecha','progreso'];
+
+    fields.forEach(f => {
+      document.getElementById('f-' + f).addEventListener('input', updateProgress);
+    });
+
+    function updateProgress() {
+      let filled = 0;
+      fields.forEach(f => { if (document.getElementById('f-'+f).value.trim()) filled++; });
+      document.getElementById('progress-fill').style.width = (filled / fields.length * 100) + '%';
+    }
+
+    async function handleSubmit() {
+      let valid = true;
+      fields.forEach(f => {
+        const el = document.getElementById('f-' + f);
+        const err = document.getElementById('e-' + f);
+        if (!el.value.trim()) {
+          err.style.display = 'block';
+          el.classList.add('error');
+          valid = false;
+        } else {
+          err.style.display = 'none';
+          el.classList.remove('error');
+        }
+      });
+      if (!valid) return;
+
+      const btn = document.getElementById('send-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" stroke="white" stroke-width="2" fill="none" width="18" height="18"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Enviando...';
+
+      const nombre = document.getElementById('f-nombre').value.trim();
+      const data = {
+        nombre,
+        cargo:    document.getElementById('f-cargo').value.trim(),
+        objetivo: document.getElementById('f-objetivo').value.trim(),
+        fecha:    document.getElementById('f-fecha').value.trim(),
+        progreso: document.getElementById('f-progreso').value.trim(),
+        timestamp: new Date().toLocaleString('es-CO', {timeZone: 'America/Bogota'})
+      };
+
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        document.getElementById('success-msg').textContent =
+          '¡' + nombre + ', tu ticket fue registrado exitosamente!';
+        document.getElementById('form-body').style.display = 'none';
+        document.getElementById('success-body').style.display = 'flex';
+      } catch(e) {
+        alert('Error al enviar el formulario. Por favor intenta de nuevo.');
+        btn.disabled = false;
+        btn.innerHTML = '<svg viewBox="0 0 24 24" stroke="white" stroke-width="2" fill="none" width="18" height="18" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg> Enviar ticket';
+      }
+    }
+
+    function resetForm() {
+      fields.forEach(f => {
+        const el = document.getElementById('f-' + f);
+        el.value = '';
+        el.classList.remove('error');
+        document.getElementById('e-' + f).style.display = 'none';
+      });
+      document.getElementById('progress-fill').style.width = '0%';
+      document.getElementById('form-body').style.display = 'block';
+      document.getElementById('success-body').style.display = 'none';
+      const btn = document.getElementById('send-btn');
+      btn.disabled = false;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" stroke="white" stroke-width="2" fill="none" width="18" height="18" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg> Enviar ticket';
+    }
+  </script>
+</body>
+</html>
